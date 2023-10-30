@@ -1,14 +1,14 @@
 
 
-import Header from "/Users/babatundejrayanda/Documents/Login-signup/login-signup/src/Components /Header.js"
+import Navbar from "../Components/Navbar/Navbar.jsx"
 
 
 export default function Account(){
     return(
 <>
-        <Header />
+        <Navbar></Navbar>
         <h2> Acc DASH</h2>
-</>
+        </>
 
     )
 }
