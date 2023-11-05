@@ -1,6 +1,6 @@
 import Navbar from "../Components /Navbar"
 
-import Header from '/Users/babatundejrayanda/Documents/Login-signup/login-signup/src/Components /Header.js'
+import Header from '/login-signup/src/Components/Header.js'
 export default function Error(){
     return(
 <>

@@ -2,9 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import './LoginSignup.css';
 
-import user_icon from '/Users/babatundejrayanda/Documents/Login-signup/login-signup/src/Components /Assets/person.png'
-import email_icon from '/Users/babatundejrayanda/Documents/Login-signup/login-signup/src/Components /Assets/email.png'
-import password_icon from '/Users/babatundejrayanda/Documents/Login-signup/login-signup/src/Components /Assets/password.png'
+import user_icon from '/login-signup/src/Components/Assets/person.png'
+import email_icon from '/login-signup/src/Components/Assets/email.png'
+import password_icon from '/login-signup/src/Components/Assets/password.png'
 const LoginSignup = () => {
     const [action, setAction] = useState('Login');
     

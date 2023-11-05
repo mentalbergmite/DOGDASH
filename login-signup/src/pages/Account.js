@@ -1,6 +1,6 @@
 
 
-import Header from "/Users/babatundejrayanda/Documents/Login-signup/login-signup/src/Components /Header.js"
+import Header from "/src/Components/Header.js"
 
 
 export default function Account(){
