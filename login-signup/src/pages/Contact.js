@@ -1,4 +1,4 @@
-import Header from "/login-signup/src/Components/Header.js"
+import Header from "../Components/Header.js"
 
 
 export default function Contact(){

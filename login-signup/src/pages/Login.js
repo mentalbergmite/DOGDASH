@@ -1,7 +1,7 @@
-import Navbar from '../Components /Navbar';
+import Navbar from '../Components/Navbar';
 
 // import Header from "../Components/Header"
-import LoginSignup from '/src/Components/LoginSignup/LoginSignup.jsx';
+import LoginSignup from '../LoginSignup/LoginSignup.jsx';
 
 
 export default function Login(){

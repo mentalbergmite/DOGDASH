@@ -1,4 +1,4 @@
-import Header from "/src/Components /Header.js"
+import Header from "../Components/Header.js"
 import Navbar from "../Components/Navbar"
 
 
