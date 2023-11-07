@@ -8,11 +8,12 @@ import "./index.css";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Contact from "./pages/Contact";
-import Login from "./pages/Login";
+import Login1 from "./pages/Login";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
 import About from "./pages/About";
 import Home from "./pages/Home";
+import Signup1 from "./pages/Signup";
 
 const router = createBrowserRouter([
   {
@@ -24,8 +25,12 @@ const router = createBrowserRouter([
     element: <Contact/>,
   },
   {
+    path: "/signup",
+    element: <Signup1/>,
+  },
+  {
     path: "/login",
-    element: <Login/>,
+    element: <Login1/>,
   },
   {
     path: "/home",

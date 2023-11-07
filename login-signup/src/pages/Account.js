@@ -1,6 +1,6 @@
 
 
-import Header from "../Components /Header.js"
+import Header from "../Components/Header.js"
 
 
 export default function Account(){
