@@ -1,15 +1,12 @@
-import Navbar from '../Components/Navbar';
+import React from 'react';
+import Navbar from "../Components/Navbar/Navbar.jsx";
+import LoginSignup from "../Components/LoginSignup/LoginSignup.jsx";
 
-// import Header from "../Components/Header"
-//import LoginSignup from '../Components/LoginSignup/LoginSignup.jsx';
-import Login from '../Components/LoginSignup/Login';
-
-
-export default function LoginPage(){
+export default function Login(){
     return(
-         
-        <Login/>
-        
-
-    )
+        <React.Fragment>
+            <Navbar />
+            <LoginSignup />
+        </React.Fragment>
+    );
 }

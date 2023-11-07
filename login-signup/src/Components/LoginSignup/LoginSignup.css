@@ -47,7 +47,7 @@
 .input{
     display: flex;
     align-items: center;
-    margin: 35px;
+    margin: auto;
     width: 480px;
     height: 80px;
     background: #ffffff;
@@ -86,7 +86,6 @@
     display: flex;
     gap: 30px;
     margin: 60px auto;
-    align-items: center;
 }
 
 .submit{
@@ -107,4 +106,28 @@
 
     background: #eaeaea;
     color: #676767;
+}
+
+.have-account{
+    padding-left: 62px;
+    margin-top: 27px;
+    color: #797979;
+    font-size: 18px;
+}
+
+.have-account span{
+    color: #ffc800;
+    cursor: pointer;
+}
+.container button{
+    align-items: center;
+    width: 300px;
+    height: 50px;
+    color: wheat;
+    background: #ff5252;
+    margin-top: 30px;
+    margin-left: 150px;
+    border: 24px;
+    cursor: pointer;
+    font-size: 24px;
 }

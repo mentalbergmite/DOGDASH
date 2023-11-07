@@ -1,4 +1,5 @@
-import Navbar from '../Components/Navbar';
+
+import Navbar from '../Components/Navbar/Navbar';
 
 // import Header from "../Components/Header"
 //import LoginSignup from '../Components/LoginSignup/LoginSignup.jsx';
