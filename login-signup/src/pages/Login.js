@@ -5,7 +5,7 @@ import Navbar from '../Components/Navbar';
 import Login from '../Components/LoginSignup/Login';
 
 
-export default function Login1(){
+export default function LoginPage(){
     return(
          
         <Login/>
