@@ -58,7 +58,7 @@ class Account extends Component{
                 <button onClick={() => this.setState({ showAlert: false })}>Close</button>
             </div>
             )}
-            <h2> Acc DASH</h2>
+            <h2> Your Account</h2>
             <div>
                 <h3>Name</h3><p>#name</p>
                 <h3>Email</h3><p>#email</p>
