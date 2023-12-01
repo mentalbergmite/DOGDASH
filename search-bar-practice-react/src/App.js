@@ -36,7 +36,7 @@ export default function App () {
   
   // at every occurance of the change event, sets the current value of the form to the state
   const handleChange = e => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(e.target.value.toLowerCase());
   };
   useEffect(() => {
     
