@@ -1,0 +1,12 @@
+{
+  "name": "dogdash-master",
+  "version": "1.0.0",
+  "description": "DoggyDash repo ## Tunde - Fullstack and UI - beginning to create pages and utilizing react and flask.  ``` npm build  npm install react-router-dom ```",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

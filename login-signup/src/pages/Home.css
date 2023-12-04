@@ -1,0 +1,97 @@
+/* home.css */
+
+/* Styles for the image container */
+.image-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+/* Styles for the image itself */
+.image-container img {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 1100px;
+    margin: auto;
+    width: 100%; /* Set the width to 100% to make the image responsive */
+    max-height: 550px; /* Set the maximum height as needed */
+    border-radius: 8px;
+  }
+
+/* Styles for the overlay link/button */
+.overlay-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Make the link/button invisible */
+    cursor: pointer;
+  }
+  
+  /* Ensure that the link/button only covers the image dimensions */
+  .image-frame {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Styles for the product row */
+.home-product-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px auto;
+  max-width: 1100px;
+}
+
+/* Styles for individual products in the row */
+.home-product {
+  flex: 0 0 23%; /* Adjust the width as needed */
+  margin-right: 1%;
+  border: 1px solid #ddd; /* Add a border for separation */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.home-product:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.home-product-image-container {
+  overflow: hidden;
+  border-bottom: 1px solid #ddd;
+}
+
+.home-custom-image {
+  width: 100%;
+  height: auto;
+}
+
+.home-product-details {
+  padding: 10px;
+}
+
+.home-product-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.home-product-price {
+  font-size: 14px;
+  color: #888;
+}
+
+.home-product-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+}
+
+.home-product-button:hover {
+  background-color: #45a049;
+}

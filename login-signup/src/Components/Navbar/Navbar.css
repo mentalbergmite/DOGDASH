@@ -78,6 +78,10 @@ font-weight: 600;;
 background: white;
 }
 
+.nav-login-paw:hover .nav-paw-count {
+    visibility: visible; /* Show on hover */
+}
+
 .nav-paw-count {
     width: 22px;
     height: 22px;

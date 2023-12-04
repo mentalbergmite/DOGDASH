@@ -1,32 +1,73 @@
+/* App.css */
 
-.navbar{
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.navbar {
   display: flex;
   justify-content: center;
   background: orangered;
-  padding:  5px 10px;
- 
+  padding: 5px 10px;
 }
 
-.navbar-logo{
+.navbar-logo {
   display: flex;
-  list-style-type: circle;
+  list-style-type: none;
   gap: 7px;
   margin: 0;
   align-items: center;
 }
+
 .navbar-menu {
   display: flex;
   list-style-type: none;
   gap: 30px;
   margin: 0;
   align-items: center;
-
 }
-.navbar-menu li a{
 
+.navbar-menu li a {
   text-decoration: none;
   color: white;
 }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  justify-content: center; /* Center the grid */
+  margin: 20px; /* Add margin around the grid */
+}
+
+/*
+.product {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  width: 200px;
+}
+
+.product-image {
+  height: 150px;
+  background: black;
+}
+
+
+
+.product-name {
+  font-weight: bold;
+}
+
+.product-price {
+  color: green;
+}
+*/
+
 .App {
   text-align: center;
 }

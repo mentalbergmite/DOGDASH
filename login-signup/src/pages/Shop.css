@@ -1,0 +1,42 @@
+/* Shop.css */
+
+
+
+
+.filter-sidebar {
+    width: 150px; /* Adjust the width as needed */
+    height: 100vh; /* Full height of the viewport */
+    background: linear-gradient( #f0801d,#e74e36);
+    float: left;
+    margin-top: -2vh; /* Adjust the value to extend the sidebar upwards */
+
+  }
+  
+  .filter-sidebar button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: orangered;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+
+    /* Grid styles */
+    .products-grid {
+        margin-left: 220px; /* Adjust to accommodate the width of the sidebar */
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+        gap: 16px; /* Adjust the gap between items as needed */
+      }
+      
+      .added-items-list,
+      .cart-items-list {
+        /* Add any additional styling as needed */
+      }
+  
+  
+  

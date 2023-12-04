@@ -14,13 +14,14 @@ import Error from "./pages/Error";
 import Account from "./pages/Account";
 import About from "./pages/About";
 import Home from "./pages/Home";
-import Cart from './pages/Cart'
-import Shop from './pages/Shop'
+import Cart from './pages/Cart';
+import Shop from './pages/Shop';
+import Checkout from './pages/Checkout';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>,
+    element: <Home/>,
   },
   {
     path: "/contact",
@@ -35,11 +36,21 @@ const router = createBrowserRouter([
     element: <Home/>,
   },
   {
+    path: "/shop",
+    element: <Shop/>,
+  },
+  {
     path: "/about",
     element: <About/>,
   }, {
     path: "/account",
     element: <Account/>,
+  }, {
+    path: "/cart",
+    element: <Cart/>,
+  }, {
+    path: "/checkout",
+    element: <Checkout/>,
   }, {
     path: "/error",
     element: <Error/>,
