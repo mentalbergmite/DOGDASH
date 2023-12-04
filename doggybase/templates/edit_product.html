@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+</head>
+<body>
+    <h2>Edit Product</h2>
+    <form method="POST" action="{{ url_for('edit_product', id=product.ProductID) }}">
+        <label for="product_name">Name:</label>
+        <input type="text" name="product_name" value="{{ product.ProductName }}" required><br>
+        <label for="price">Price:</label>
+        <input type="number" name="price" step="0.01" value="{{ product.Price }}" required><br>
+        <label for="description">Description:</label>
+        <textarea name="description" required>{{ product.Description }}</textarea><br>
+        <label for="category_id">Category:</label>
+        <input type="number" name="category_id" value="{{ product.CategoryID }}"><br>
+        <label for="stock_quantity">Stock Quantity:</label>
+        <input type="number" name="stock_quantity" value="{{ product.StockQuantity }}" required><br>
+        <input type="submit" value="Update Product">
+    </form>
+</body>
+</html>

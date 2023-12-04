@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Placed</title>
+    <style>
+        body {
+            background-color: orange;
+            color: black;
+            text-align: center;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+            text-align: left;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .order-details {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-details li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Order Placed!</h2>
+
+        <!-- Display a random order number -->
+        <p>Order Number: {{ random_order_number }}</p>
+
+        <!-- Display the stored checkout information -->
+        <ul class="order-details">
+            <li><strong>Name:</strong> {{ checkout_info.get('name', '') }}</li>
+            <li><strong>Email:</strong> {{ checkout_info.get('email', '') }}</li>
+            <li><strong>Address:</strong> {{ checkout_info.get('address', '') }}</li>
+            <li><strong>Product Details:</strong></li>
+            {% for checkout, product in checkout_items %}
+                <li>{{ product.ProductName }} - ${{ product.Price }} - Quantity: {{ checkout.quantity }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
