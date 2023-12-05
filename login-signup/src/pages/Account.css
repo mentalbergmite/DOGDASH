@@ -1,0 +1,38 @@
+/* Account.css */
+
+.account-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .account-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-top: -30%;
+  }
+  
+
+  .profile-image {
+    width: 100%; /* Ensure the image takes up the full space of its container */
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio while covering the container */
+  }
+
+  .profile-box {
+    text-align: center; /* Center its children horizontally */
+  }
+
+  .profile-image-frame {
+    display: inline-block; /* Make it an inline block */
+  }
+  
+  .profile-image {
+    width: 100%; /* Ensure the image takes up the full width of its container */
+    max-width: 200px; /* Set a maximum width for the image */
+    display: block; /* Remove any default inline styling */
+    margin: 0 auto; /* Center the image horizontally */
+  }

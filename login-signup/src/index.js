@@ -10,6 +10,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup"; // Import the Signup component
 import Error from "./pages/Error";
 import Account from "./pages/Account";
 import About from "./pages/About";
@@ -17,6 +18,7 @@ import Home from "./pages/Home";
 import Cart from './pages/Cart';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
+
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login/>,
+  },
+  {
+    path: "/signup", // Define the signup route
+    element: <Signup />, // Use the Signup component
   },
   {
     path: "/home",

@@ -8,8 +8,14 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [cartCount, setCartCount] = useState(0);
+  const [currentUserName, setCurrentUserName] = useState('Login'); // Set initial state to 'Login'
+  const [loading, setLoading] = useState(true); // Add loading state
+
 
   useEffect(() => {
+
+
+
     const fetchCartData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/cart');
@@ -26,10 +32,34 @@ const Navbar = () => {
       }
     };
 
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/user');
+        const userData = await response.json();
+    
+        if (response.ok) {
+          console.log('User Data:', userData);
+          setCurrentUserName(userData.current_user);
+        }
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
     // Call the function to fetch cart data
     fetchCartData();
+
+    // Call the function to fetch user data
+    fetchUserData();
+
   }, []); // Empty dependency array ensures this effect runs only once on mount
 
+  if (loading) {
+    // Display loading state while fetching data
+    return <p>Loading...</p>;
+  }
+  
   return (
     <div className='navbar'>
       <div className='navbar-logo'>
@@ -43,7 +73,7 @@ const Navbar = () => {
       </ul>
       <div className="nav-login-paw">
         <Link to='/login'>
-          <button>Login</button>
+          <button>{currentUserName}</button>
         </Link>
         <Link to='/cart'>
           <img src={paw} alt="Cart Paw Icon" style={{ width: '100px', height: 'auto' }} />
