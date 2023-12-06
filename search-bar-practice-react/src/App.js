@@ -29,7 +29,7 @@ const Shop = () => {
           console.error('Error fetching products:', error);
         });
         const results = products.filter((products) =>
-      products.toLowerCase().includes(searchTerm),
+      products.name.toLowerCase().includes(searchTerm),
     );
     setSearchResults(results);
     }, [products,searchTerm]);
