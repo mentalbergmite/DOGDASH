@@ -18,6 +18,7 @@ import Home from "./pages/Home";
 import Cart from './pages/Cart';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
+import Success from './pages/Success';
 
 
 const router = createBrowserRouter([
@@ -60,6 +61,9 @@ const router = createBrowserRouter([
   }, {
     path: "/error",
     element: <Error/>,
+  }, {
+    path: "/success",
+    element: <Success/>,
   },
 ]);
 

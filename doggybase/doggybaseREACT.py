@@ -1,10 +1,10 @@
-from flask import Flask, render_template, jsonify, request, session
+from flask import Flask, render_template, jsonify, request, session, make_response, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask import make_response
 from flask_migrate import Migrate
-from flask import send_file
 from random import sample
+from datetime import datetime
+
 
 
 
@@ -26,6 +26,8 @@ class Product(db.Model):
     price = db.Column(db.Float)
     image_source = db.Column(db.String(100))  # Add a new field for the image source
     cart_items = db.relationship('CartItem', backref='product', lazy=True)
+    orders = db.relationship('OrderItem', backref='product', lazy=True)
+
 
     def __init__(self, name, price, image_source):  # Add 'image_source' to the constructor
         self.name = name
@@ -37,18 +39,24 @@ class CartItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer, default=1)
     order_id = db.Column(db.Integer, db.ForeignKey('order.id')) 
+    
 
     def __init__(self, product_id, quantity=1, order_id=None):  # Include order_id in the constructor
         self.product_id = product_id
         self.quantity = quantity
         self.order_id = order_id  
 
-
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    cart_items = db.relationship('CartItem', backref='order', lazy=True)
+    order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # Add the order_date field
+    order_items = db.relationship('OrderItem', backref='order', lazy=True)
 
+class OrderItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    quantity = db.Column(db.Integer, default=1)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -157,6 +165,7 @@ def get_user():
         user_id = session['user_id']
         current_user = User.query.get(user_id)
 
+
         user_data = {
             'current_user': current_user.name,
             'email': current_user.email,
@@ -166,7 +175,10 @@ def get_user():
         }
     else:
         # User is not logged in
-        user_data = {'current_user': 'Login', 'email': 'login@mail.com', 'address': '10 Login Lane', 'orders': []}
+
+
+        user_data = {'current_user': 'Evan', 'email': 'evan@mail.com', 'address': '10 Test Lane', 'phone': '444-412-1044', 'orders': []}
+        
 
     return jsonify(user_data)
 
@@ -361,10 +373,76 @@ def update_quantity():
 
 
 
-@app.route('/checkout', methods=['GET', 'POST'])
+@app.route('/checkout', methods=['POST'])
 def checkout():
-    return jsonify({'success': True, 'message': 'Checkout successful'})
-    # Your implementation here
+    try:
+        if 'user_id' in session:
+            # Get the user ID from the session
+            user_id = session['user_id']
+
+            # Create a new order for the user
+            new_order = Order(user_id=user_id)
+            db.session.add(new_order)
+            db.session.commit()
+
+            # Move cart items to order items
+            cart_items = CartItem.query.filter_by(order_id=None).all()
+            for cart_item in cart_items:
+                new_order_item = OrderItem(order_id=new_order.id, product_id=cart_item.product_id, quantity=cart_item.quantity)
+                db.session.add(new_order_item)
+
+            # Clear the cart
+            CartItem.query.filter_by(order_id=None).delete()
+
+            # Commit the changes
+            db.session.commit()
+
+            return jsonify({'success': True, 'message': 'Checkout successful'})
+        else:
+            return jsonify({'success': False, 'message': 'User not logged in'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error during checkout: {str(e)}'})
+
+
+@app.route('/api/orders', methods=['GET'])
+def get_orders():
+    try:
+        # Retrieve the user's ID from the session
+        user_id = session.get('user_id')
+
+        if user_id is not None:
+            # Assuming the starting order includes one of each of the first four items
+            # from the product database
+            products = Product.query.limit(4).all()
+
+            # Create a new order for the user
+            new_order = Order(user_id=user_id)
+            db.session.add(new_order)
+            db.session.commit()
+
+            # Add items to the order
+            for product in products:
+                order_item = OrderItem(order_id=new_order.id, product_id=product.id, quantity=1)
+                db.session.add(order_item)
+
+            db.session.commit()
+
+            # Fetch the order details
+            order_details = {
+                'order_id': new_order.id,
+                'order_date': new_order.order_date.strftime('%Y-%m-%d'),
+                'items': [
+                    {'product_id': item.product_id, 'quantity': item.quantity}
+                    for item in new_order.order_items
+                ]
+            }
+
+            return jsonify({'orders': [order_details]})
+        else:
+            return jsonify({'error': 'User not logged in'}), 401
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/')
@@ -445,9 +523,9 @@ productsData = [
 
 ]
 
-# Function to initialize the database with predefined products
+# Function to initialize the database with predefined products and a starting order
 def initialize_database():
-    print('Initializing database with products and user order...')
+    print('Initializing database with products and user orders...')
 
     try:
         # Check if products already exist in the database
@@ -467,43 +545,42 @@ def initialize_database():
             db.session.commit()
 
             print('Database initialized with products.')
+
+            # Create a starting order with one of each of the first four items
+            first_four_products = Product.query.limit(4).all()
+            if first_four_products:
+                # Get or create a user (assuming user with ID 1)
+                user = User.query.filter_by(id=1).first()
+                if not user:
+                    user = User(name='Evan', email='evan@mail.com', password='evan', current_user='Evan', address='10 Test Lane', phone='444-412-1044')
+                    db.session.add(user)
+                    db.session.commit()
+
+                # Create a new order for the user
+                starting_order = Order(user_id=user.id)
+                db.session.add(starting_order)
+                db.session.commit()
+
+                # Add each of the first four products to the order
+                for product in first_four_products:
+                    order_item = OrderItem(order_id=starting_order.id, product_id=product.id, quantity=1)
+                    db.session.add(order_item)
+
+                # Commit the changes to the database
+                db.session.commit()
+
+                print('Starting order created.')
+            else:
+                print('No products available to create a starting order.')
         else:
             print('Products already exist in the database. Skipping initialization.')
 
     except Exception as e:
         print(f'Error initializing database: {str(e)}')
 
-    try:
-        # Check if the 'Login' user already exists
-        existing_user = User.query.filter_by(email='Login@mail.com').first()
 
-        if not existing_user:
-            # Create a new user with 'current_user' set to 'login'
-            new_user = User(name='Login', email='Login@mail.com', password='Login', phone = '410-442-1109', current_user='Login')
-            db.session.add(new_user)
-            db.session.commit()
-        else:
-            new_user = existing_user
 
-        # Create an order for the user
-        user_order = Order(user_id=new_user.id)
-        db.session.add(user_order)
-        db.session.commit()
 
-        # Add the first 3 products to the user's order
-        for i in range(3):
-            product = Product.query.offset(i).first()
-            if product:
-                cart_item = CartItem(product_id=product.id, quantity=1, order_id=user_order.id)
-                db.session.add(cart_item)
-
-        # Commit the changes to the database
-        db.session.commit()
-
-        print('User order initialized with the first 3 products.')
-
-    except Exception as e:
-        print(f'Error initializing database: {str(e)}')
 
 
 def clear_database():

@@ -1,16 +1,29 @@
-// CheckoutSuccess.js
+// Success.js
 
 import React from 'react';
+import Navbar from "../Components/Navbar/Navbar.jsx";
 import './Success.css'; // Import the CSS file for styling
+import exampleOrderMap from './exampleordermap.png'; // Import the image
 
-const CheckoutSuccess = () => {
+
+const Success = () => {
   return (
+    <>
+    <Navbar cartCount={0} />
     <div className="success-container">
       <div className="order-placed-box">
+        <div className="form-group">
+          <div className="order-map-image-container">
+          <img src={exampleOrderMap} alt="Order Map" className="order-map-image" />
+          </div>
+        </div>
         <h2>Order Placed!</h2>
-        <p>Order Number: {generateRandomOrderNumber()}</p>
+        <p>Order Number: {412022}</p>
+        <p>Thank you for shopping with us!</p>
       </div>
+        
     </div>
+    </>
   );
 };
 

@@ -3,7 +3,7 @@
 .checkout-container {
     display: flex;
     justify-content: space-between;
-    margin: 20px;
+    margin-top: -90px;
   }
   
   .cart-container {
@@ -17,6 +17,7 @@
   .added-items-list,
   .product-list-container {
     margin-bottom: 20px;
+    margin-left: -40px;
   }
   
   .product-image-placeholder {
@@ -32,6 +33,7 @@
   }
   
   .checkout-form {
+    width: 75%;
     background-color: #fff;
     border: 1px solid #ddd;
     padding: 10px;
@@ -48,7 +50,8 @@
   }
 
   .order-map-image {
-    width: 100%; /* Adjust the width as needed */
+    width: 80%; /* Adjust the width as needed */
+    margin-left: 10%;
     margin-bottom: 10px;
   }
   

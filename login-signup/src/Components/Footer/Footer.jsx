@@ -8,9 +8,8 @@ export const Footer = () => {
             <p> Ruff Up</p>
         </div>
         <ul className="footer-links">
-`           <li>Contact</li>
             <li>Contact</li>
-            <li>Products</li>    
+            <li>About Us</li>    
         </ul>
         <div className="footer-social-icons">
             <div className="footer-icon-container">

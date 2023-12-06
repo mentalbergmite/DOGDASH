@@ -5,25 +5,45 @@ import './Account.css'; // Import your CSS file for styling
 import Navbar from "../Components/Navbar/Navbar.jsx";
 import pawfileImage from '../Components/Assets/pawfile.png';
 
-
 const Account = () => {
   const [userData, setUserData] = useState(null);
+  const [cartData, setCartData] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUser = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/user');
-        const data = await response.json();
+        const userResponse = await fetch('http://localhost:5000/api/user');
+        const userData = await userResponse.json();
 
-        if (response.ok) {
-          setUserData(data);
+        if (userResponse.ok) {
+          setUserData(userData);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
 
-    fetchUserData();
+    const fetchCart = async () => {
+      try {
+        const cartResponse = await fetch('http://localhost:5000/api/cart');
+        const cartData = await cartResponse.json();
+
+        if (cartResponse.ok) {
+          setCartData(cartData);
+          console.log('CART Data:', cartData); // Add this line
+
+        }
+      } catch (error) {
+        console.error('Error fetching cart data:', error);
+      }
+    };
+
+    const fetchData = async () => {
+      await fetchUser();
+      await fetchCart();
+    };
+  
+    fetchData();
   }, []);
 
   return (
@@ -35,7 +55,6 @@ const Account = () => {
             <>
               <div className="profile-box">
                 <div className="profile-image-frame">
-                  {/* Display the paw.png image */}
                   <img src={pawfileImage} alt="Paw" className="profile-image" />
                 </div>
               </div>
@@ -53,12 +72,27 @@ const Account = () => {
                   <p><strong>Phone:</strong></p>
                   <p>{userData.phone}</p>
                 </div>
-                <h3>Orders:</h3>
-                <ul>
-                  {userData.orders.map((order) => (
-                    <li key={order.id}>Order ID: {order.id}, Date: {order.order_date}</li>
-                  ))}
-                </ul>
+              </div>
+              <div className="orders-box">
+                <h3>Order:</h3>
+                <p>Order Number: {412022}</p>
+                <p>Order Date: {new Date().toLocaleDateString()}</p>
+                <p>Order Status: {"Pending"}</p>
+                <p>Order Items:</p>
+                {cartData && cartData.cart && cartData.cart.length > 0 ? (
+                  <ul>
+                    {cartData.cart.map(item => (
+                      <li key={item.product_id}>
+                        Product: {item.name}, Price: {item.price}, Quantity: {item.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                ) : (
+                  <p>Cart is empty.</p>
+                )}
+                <p>Order Total: ${cartData && cartData.cart && cartData.cart.length > 0 ? cartData.cart.reduce((acc, item) => acc + item.price * item.quantity, 0) : 0}</p>
+
               </div>
             </>
           ) : (

@@ -29,15 +29,18 @@
 
 .footer-links li{
     cursor: pointer;
+    align-items: center;
 }
 
 .footer-social-icon{
     display: flex;
     gap: 20px;
+    
 }
 .footer-icon-container{
     padding: 10;
     padding-bottom: 6px;
     background: white;
     border: 1px solid white;
+    margin-left: 30px;
 }
