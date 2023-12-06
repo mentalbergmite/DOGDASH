@@ -1,9 +1,7 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS  # Import CORS
-from flask import jsonify
-from flask import make_response
 from flask_cors import CORS
+from flask import make_response
 from flask_migrate import Migrate
 from flask import send_file
 from random import sample
@@ -13,11 +11,13 @@ from random import sample
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})  # Allow only for /api routes
+app.secret_key = 'your_secret_key'  
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})  # Allow only for /api routes
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///doggybase.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+current_user = None
 
 
 class Product(db.Model):
@@ -36,10 +36,38 @@ class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer, default=1)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id')) 
 
-    def __init__(self, product_id, quantity=1):
+    def __init__(self, product_id, quantity=1, order_id=None):  # Include order_id in the constructor
         self.product_id = product_id
         self.quantity = quantity
+        self.order_id = order_id  
+
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    cart_items = db.relationship('CartItem', backref='order', lazy=True)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128))
+    address = db.Column(db.String(255))  # Add the address field
+    phone = db.Column(db.String(20))  # Add the phone field
+    current_user = db.Column(db.String(50), default='login')  
+    orders = db.relationship('Order', backref='user', lazy=True)
+
+    def __init__(self, name, email, password, address='', phone = '', current_user='login'):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.address = address
+        self.phone = phone
+        self.current_user = current_user
+
 
 
 
@@ -50,6 +78,97 @@ class CartItem(db.Model):
 # Create tables
 with app.app_context():
     db.create_all()
+
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    # Check if the user exists
+    user = User.query.filter_by(email=email, password=password).first()
+
+    if user:
+        # Set the user ID in the session to mark the user as logged in
+        session['user_id'] = user.id
+
+        # Update the current_user field to the user's name
+        user.current_user = user.name
+        db.session.commit()
+
+        print(f"User {user.name} logged in. current_user updated to {user.current_user}")
+
+        return jsonify({
+            'success': True,
+            'message': 'Login successful',
+            'current_user': user.current_user
+        })
+    else:
+        return jsonify({'success': False, 'message': 'Invalid email or password'})
+
+
+ 
+    
+@app.route('/api/logout')
+def logout():
+    session.pop('user_id', None)  # Remove 'user_id' from the session
+    return jsonify({'success': True, 'message': 'Logout successful'})
+
+@app.route('/api/signup', methods=['OPTIONS', 'POST'])
+def signup():
+    if request.method == 'OPTIONS':
+        return jsonify({'success': True}), 200
+
+    try:
+        data = request.get_json()
+
+        # Extract user data from the request
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+
+        # Check if all required fields are present
+        if not (name and email and password):
+            return jsonify({'success': False, 'message': 'Incomplete data'}), 400
+
+        # Check if the email is already registered
+        if User.query.filter_by(email=email).first():
+            return jsonify({'success': False, 'message': 'Email already in use'}), 409
+
+        # Create a new user instance
+        new_user = User(name=name, email=email, password=password)
+
+        # Add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({'success': True, 'message': 'Signup successful'}), 201
+
+    except Exception as e:
+        print('Error during signup:', str(e))
+        return jsonify({'success': False, 'message': 'Signup failed'}), 500
+
+@app.route('/api/user', methods=['GET'])
+def get_user():
+    if 'user_id' in session:
+        # User is logged in, fetch the user's information
+        user_id = session['user_id']
+        current_user = User.query.get(user_id)
+
+        user_data = {
+            'current_user': current_user.name,
+            'email': current_user.email,
+            'address': current_user.address,
+            'phone': current_user.phone,
+            'orders': [{'id': order.id, 'order_date': order.order_date.strftime('%Y-%m-%d')} for order in current_user.orders]
+        }
+    else:
+        # User is not logged in
+        user_data = {'current_user': 'Login', 'email': 'login@mail.com', 'address': '10 Login Lane', 'orders': []}
+
+    return jsonify(user_data)
 
 @app.route('/api/images/<path:filename>')
 def serve_image(filename):
@@ -250,7 +369,16 @@ def checkout():
 
 @app.route('/')
 def index():
-    return render_template('index.html')  # You can adjust this to match your template file
+    if 'user_id' in session:
+        # User is logged in, fetch the user's name
+        user_id = session['user_id']
+        current_user = User.query.get(user_id)
+        user_name = current_user.name if current_user else 'Unknown User'
+    else:
+        # User is not logged in
+        user_name = 'Login'
+
+    return render_template('index.html', current_user=user_name)
 
 #api route to get random tiles for home page
 @app.route('/api/random', methods=['GET'])
@@ -310,19 +438,21 @@ productsData = [
     { 'name': 'Round Cat House', 'price': 1500, 'image_source': 'p15.jpg' },
     { 'name': 'Dog Pringle Simulator', 'price': 100, 'image_source': 'p16.jpg' },
     { 'name': 'Cleaning Supplies', 'price': 200, 'image_source': 'p17.jpg' },
-    { 'name': 'Ground Doggo', 'price': 1300, 'image_source': 'p18.jpg' },
+    { 'name': 'Definitely Not Ground Dog', 'price': 1300, 'image_source': 'p18.jpg' },
     { 'name': 'Doggoform', 'price': 500, 'image_source': 'p19.jpg' },
-    { 'name': 'Not Dog Food', 'price': 700, 'image_source': 'p20.jpg' },
+    { 'name': 'Almost Dog Food', 'price': 700, 'image_source': 'p20.jpg' },
 
 
 ]
 
 # Function to initialize the database with predefined products
 def initialize_database():
-    print('Initializing database with products...')
+    print('Initializing database with products and user order...')
+
     try:
         # Check if products already exist in the database
         existing_products = Product.query.all()
+
         if not existing_products:
             # Loop through the predefined productsData and add them to the database
             for product_data in productsData:
@@ -339,6 +469,39 @@ def initialize_database():
             print('Database initialized with products.')
         else:
             print('Products already exist in the database. Skipping initialization.')
+
+    except Exception as e:
+        print(f'Error initializing database: {str(e)}')
+
+    try:
+        # Check if the 'Login' user already exists
+        existing_user = User.query.filter_by(email='Login@mail.com').first()
+
+        if not existing_user:
+            # Create a new user with 'current_user' set to 'login'
+            new_user = User(name='Login', email='Login@mail.com', password='Login', phone = '410-442-1109', current_user='Login')
+            db.session.add(new_user)
+            db.session.commit()
+        else:
+            new_user = existing_user
+
+        # Create an order for the user
+        user_order = Order(user_id=new_user.id)
+        db.session.add(user_order)
+        db.session.commit()
+
+        # Add the first 3 products to the user's order
+        for i in range(3):
+            product = Product.query.offset(i).first()
+            if product:
+                cart_item = CartItem(product_id=product.id, quantity=1, order_id=user_order.id)
+                db.session.add(cart_item)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        print('User order initialized with the first 3 products.')
+
     except Exception as e:
         print(f'Error initializing database: {str(e)}')
 
