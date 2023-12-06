@@ -9,7 +9,13 @@ const Shop = () => {
     const [cartItems, setCartItems] = useState([]);
     const [filterOption, setFilterOption] = useState(null);
     const [products, setProducts] = useState([]);
-  
+    const [searchTerm, setSearchTerm] = useState("");
+    const [value, setValue] = React.useState(0);
+    const [searchResults, setSearchResults] = useState([]);
+    const handleChange = e => {
+      setSearchTerm(e.target.value.toLowerCase());
+    };
+   
     useEffect(() => {
       fetch('http://localhost:5000/api/products')
         .then(response => response.json())
@@ -22,7 +28,11 @@ const Shop = () => {
         .catch(error => {
           console.error('Error fetching products:', error);
         });
-    }, []);
+        const results = products.filter((products) =>
+      products.name.toLowerCase().includes(searchTerm),
+    );
+    setSearchResults(results);
+    }, [products,searchTerm]);
   
     const addToCart = (product) => {
         // Check if the item is already in the cart
@@ -83,6 +93,7 @@ const Shop = () => {
         .catch(error => {
           console.error('Error clearing cart:', error);
         });
+
     };
   
     const handleFilter = (option) => {
@@ -93,14 +104,20 @@ const Shop = () => {
   return (
     <>
       <Navbar cartCount={cartItems.length} />
-
+        
       <div className="content-container">
         <div className="sidebar">
           <FilterSidebar className="filter-sidebar" />
         </div>
-
+        <div className = "search">
+          <input type = "text" placeholder="Search"
+        value={searchTerm}
+        onChange={handleChange}>
+            
+          </input>
+        </div>
         <div className="products-grid">
-          {products.map((product) => (
+          {searchResults.map((product) => (
             <Product
               key={product.id}
               id={product.id}
