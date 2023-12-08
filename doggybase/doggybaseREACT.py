@@ -9,7 +9,6 @@ from datetime import datetime
 
 
 
-
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})  # Allow only for /api routes
